@@ -6,8 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" 
     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    
+   
     <title>Test Task</title>
+    <script>
+        //global vars
+        var i = parseInt(localStorage.getItem('counter') ?? '0');//for user's unique ID
+        var arrForItems = new Array();//for users' info
+
+        function addToLStorage(){//adding new user's info to table & local storage
+            getFromLStorage();//get users' info in array
+            //get info from form fields
+            var g = document.getElementById("gender").value;
+            i = i + 1;
+            localStorage.setItem('counter', (i).toString());//increment counter in local storage as well
+            arrForItems.push({//add new user into the array
+                ID: i,//from variable in 'counter', unique ID
+                lastName: document.getElementById("lastName").value,//values from form
+                name: document.getElementById("name").value,
+                address: document.getElementById("address").value,
+                dateBirth: document.getElementById("dateBirth").value,
+                gender: g=="select your gender"?"":g,
+                notes: document.getElementById("notes").value
+            });
+
+            localStorage.setItem("localStorage",JSON.stringify(arrForItems));//add renewed information in local storage
+            showStorage();//show renewed info into the table
+        }
+
+
+        function getFromLStorage(){//get local storage info into the array
+            var str = localStorage.getItem("localStorage");//get information from local storage(as a string)
+            if(str != null) arrForItems = JSON.parse(str);//parse it in array,now array has users' information
+            else arrForItems = [];
+
+        }
+
+        function showStorage(){//show renewed info into the table
+            var table = document.getElementById("theTable");
+            getFromLStorage();//to get renewed info into the array
+            var x = table.rows.length - 1;
+            while(x > 0){//delete rows in table
+                table.deleteRow(x);
+                x--;
+            }
+            for(j = 0; j < arrForItems.length; j++){//then add each member(user info) of the array to the table
+                var row = table.insertRow();//add new row, seven cells
+                var val1 = row.insertCell();
+                var val2 = row.insertCell();
+                var val3 = row.insertCell();
+                var val4 = row.insertCell();
+                var val5 = row.insertCell();
+                var val6 = row.insertCell();
+                var val7 = row.insertCell();
+                val1.innerHTML = arrForItems[j].ID;//fill with values from array
+                val2.innerHTML = arrForItems[j].lastName;
+                val3.innerHTML = arrForItems[j].name;
+                val4.innerHTML = arrForItems[j].address;
+                val5.innerHTML = arrForItems[j].dateBirth;   
+                val6.innerHTML = arrForItems[j].gender;
+                //add delete button in 7th cell that will call delRow function when clicked
+                val7.innerHTML = '<button type="button" class="btn btn-default" onclick="delRow();">Delete</button>';
+            }
+        }
+ 
+
+
+    </script>
 </head>
 <body>
     <div class="container">
@@ -79,5 +143,10 @@
 
         </table>
     </div>
+    <script>
+        showStorage();//to show local storage info onload
+
+
+    </script>
 </body>
 </html>
